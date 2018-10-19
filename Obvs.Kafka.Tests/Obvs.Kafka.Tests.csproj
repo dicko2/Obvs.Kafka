@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFrameworks>net46;netcoreapp2.0</TargetFrameworks>
     <Configurations>Debug;Release</Configurations>
     <AssemblyTitle>Obvs.Kafka.Tests</AssemblyTitle>
     <Company>megakid</Company>
@@ -36,7 +36,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Obvs.Kafka.Tests</RootNamespace>
     <AssemblyName>Obvs.Kafka.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp />
   </PropertyGroup>
@@ -56,14 +55,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="NLog" Version="4.4.1" />
     <PackageReference Include="NUnit" Version="3.6.0" />
-    <PackageReference Include="Obvs" Version="3.0.0.49" />
+    <PackageReference Include="Obvs" Version="5.0.0.17" />
     <PackageReference Include="Obvs.ActiveMQ" Version="3.2.2.49" />
     <PackageReference Include="Obvs.Serialization.Json" Version="3.0.1.30" />
-    <PackageReference Include="Rx-Core" Version="2.2.5" />
-    <PackageReference Include="Rx-Interfaces" Version="2.2.5" />
-    <PackageReference Include="Rx-Linq" Version="2.2.5" />
-    <PackageReference Include="Rx-Main" Version="2.2.5" />
-    <PackageReference Include="Rx-PlatformServices" Version="2.2.5" />
-    <PackageReference Include="Rx-Testing" Version="2.2.5" />
   </ItemGroup>
 </Project>
