@@ -44,7 +44,6 @@ namespace Obvs.Kafka.Tests
             // Step 5. Activate the configuration
             NLog.LogManager.Configuration = config;
 
-            kafka4net.Logger.SetupNLog();
         }
 
 

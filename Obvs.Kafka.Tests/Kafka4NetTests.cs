@@ -9,8 +9,6 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using kafka4net;
-using kafka4net.ConsumerImpl;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -52,56 +50,55 @@ namespace Obvs.Kafka.Tests
             // Step 5. Activate the configuration
             NLog.LogManager.Configuration = config;
 
-            kafka4net.Logger.SetupNLog();
         }
 
         [Test]
         [Explicit]
         public async Task TestServiceBusWithRemoteKafka1()
         {
-            var topic = "autocreate.test." + _rnd.Next();
-            const int producedCount = 505;
-            var lala = Encoding.UTF8.GetBytes("la-la-la");
-            // TODO: set wait to 5sec
+            //var topic = "autocreate.test." + _rnd.Next();
+            //const int producedCount = 505;
+            //var lala = Encoding.UTF8.GetBytes("la-la-la");
+            //// TODO: set wait to 5sec
 
-            //
-            // Produce
-            // In order to make sure that topic was created by producer, send and wait for producer
-            // completion before performing validation read.
-            //
-            var producer = new Producer(_seed2Addresses, new ProducerConfiguration(topic));
+            ////
+            //// Produce
+            //// In order to make sure that topic was created by producer, send and wait for producer
+            //// completion before performing validation read.
+            ////
+            //var producer = new Producer(_seed2Addresses, new ProducerConfiguration(topic));
 
-            await producer.ConnectAsync();
+            //await producer.ConnectAsync();
 
-            Console.WriteLine("Producing...");
-            await Observable.Repeat(true).
-                Take(producedCount).
-                Do(_ => producer.Send(new Message { Value = lala })).
-                ToTask();
-            await producer.CloseAsync(TimeSpan.FromSeconds(10));
+            //Console.WriteLine("Producing...");
+            //await Observable.Repeat(true).
+            //    Take(producedCount).
+            //    Do(_ => producer.Send(new Message { Value = lala })).
+            //    ToTask();
+            //await producer.CloseAsync(TimeSpan.FromSeconds(10));
 
-            //
-            // Validate by reading published messages
-            //
-            var consumer = new Consumer(new ConsumerConfiguration(_seed2Addresses, topic, new StartPositionTopicStart(), maxWaitTimeMs: 1000, minBytesPerFetch: 1));
-            var msgs = consumer.OnMessageArrived.Publish().RefCount();
-            var receivedTxt = new List<string>();
-            var consumerSubscription = msgs.
-                Select(m => Encoding.UTF8.GetString(m.Value)).
-                Synchronize(). // protect receivedTxt
-                Do(m => Console.WriteLine("Received {0}", m)).
-                Do(receivedTxt.Add).
-                Subscribe();
-            await consumer.IsConnected;
+            ////
+            //// Validate by reading published messages
+            ////
+            //var consumer = new Consumer(new ConsumerConfiguration(_seed2Addresses, topic, new StartPositionTopicStart(), maxWaitTimeMs: 1000, minBytesPerFetch: 1));
+            //var msgs = consumer.OnMessageArrived.Publish().RefCount();
+            //var receivedTxt = new List<string>();
+            //var consumerSubscription = msgs.
+            //    Select(m => Encoding.UTF8.GetString(m.Value)).
+            //    Synchronize(). // protect receivedTxt
+            //    Do(m => Console.WriteLine("Received {0}", m)).
+            //    Do(receivedTxt.Add).
+            //    Subscribe();
+            //await consumer.IsConnected;
 
-            Console.WriteLine("Waiting for consumer");
-            await msgs.Take(producedCount).TakeUntil(DateTimeOffset.Now.AddSeconds(5)).LastOrDefaultAsync().ToTask();
+            //Console.WriteLine("Waiting for consumer");
+            //await msgs.Take(producedCount).TakeUntil(DateTimeOffset.Now.AddSeconds(5)).LastOrDefaultAsync().ToTask();
 
-            Assert.AreEqual(producedCount, receivedTxt.Count, "Did not received all messages");
-            Assert.IsTrue(receivedTxt.All(m => m == "la-la-la"), "Unexpected message content");
+            //Assert.AreEqual(producedCount, receivedTxt.Count, "Did not received all messages");
+            //Assert.IsTrue(receivedTxt.All(m => m == "la-la-la"), "Unexpected message content");
 
-            consumerSubscription.Dispose();
-            consumer.Dispose();
+            //consumerSubscription.Dispose();
+            //consumer.Dispose();
         }
 
         [Test]

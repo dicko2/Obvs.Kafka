@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Disposables;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using kafka4net;
+using Confluent.Kafka;
+using Confluent.Kafka.Serialization;
 using Obvs.Kafka.Configuration;
+using Obvs.Kafka.Serialization;
 using Obvs.Serialization;
 
 namespace Obvs.Kafka
@@ -22,7 +25,7 @@ namespace Obvs.Kafka
         private IDisposable _disposable;
         private bool _disposed;
         private long _connected;
-        private Producer _producer;
+        private Producer<string, KafkaHeaderedMessage> _producer;
 
         public MessagePublisher(KafkaConfiguration kafkaConfiguration, KafkaProducerConfiguration producerConfig, string topic, IMessageSerializer serializer, Func<TMessage, Dictionary<string, string>> propertyProvider)
         {
@@ -63,9 +66,9 @@ namespace Obvs.Kafka
 
             using (var stream = new MemoryStream())
             {
-                ProtoBuf.Serializer.Serialize(stream, kafkaHeaderedMessage);
+                //ProtoBuf.Serializer.Serialize(stream, kafkaHeaderedMessage);
 
-                _producer.Send(new Message { Value = stream.ToArray() });
+                await _producer.ProduceAsync(_topic,"", kafkaHeaderedMessage);
             }
         }
 
@@ -90,24 +93,18 @@ namespace Obvs.Kafka
         {
             if (Interlocked.CompareExchange(ref _connected, 1, 0) == 0)
             {
-                var producerConfiguration = new ProducerConfiguration(_topic,
-                    batchFlushTime: TimeSpan.FromMilliseconds(50),
-                    batchFlushSize: _producerConfig.BatchFlushSize,
-                    requiredAcks: 1,
-                    autoGrowSendBuffers: true,
-                    sendBuffersInitialSize: 200,
-                    maxMessageSetSizeInBytes: 1073741824,
-                    producerRequestTimeout: null,
-                    partitioner: null);
-
-                _producer = new Producer(_kafkaConfiguration.SeedAddresses, producerConfiguration);
-
-                await _producer.ConnectAsync();
+                var configProducer = new Dictionary<string, object> { { "bootstrap.servers", _kafkaConfiguration.SeedAddresses },
+                    { "auto.create.topics.enable", true } };
+                
+                _producer = new Producer<string,KafkaHeaderedMessage>(configProducer, 
+                    new StringSerializer(Encoding.UTF8),
+                    new KafkaHeaderedMessageSerializer());
 
                 _disposable = Disposable.Create(() =>
                 {
                     _disposed = true;
-                    _producer.CloseAsync(TimeSpan.FromSeconds(2)).Wait();
+                    _producer.Flush(5);
+                    _producer.Dispose();
                 });
             }
         }
