@@ -30,10 +30,7 @@ namespace Obvs.Kafka.Configuration
             return _endpoint.CanHandle(message);
         }
 
-        public string Name
-        {
-            get { return _endpoint.Name; }
-        }
+        public string Name => _endpoint.Name;
 
         public Task PublishAsync(TEvent ev)
         {
@@ -45,14 +42,8 @@ namespace Obvs.Kafka.Configuration
             return _endpoint.ReplyAsync(request, response);
         }
 
-        public IObservable<TRequest> Requests
-        {
-            get { return _endpoint.Requests; }
-        }
+        public IObservable<TRequest> Requests => _endpoint.Requests;
 
-        public IObservable<TCommand> Commands
-        {
-            get { return _endpoint.Commands; }
-        }
+        public IObservable<TCommand> Commands => _endpoint.Commands;
     }
 }

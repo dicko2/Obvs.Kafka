@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using ProtoBuf;
@@ -9,6 +10,7 @@ namespace Obvs.Kafka
     /// to message before sending to Kafka
     /// </summary>
     [ProtoContract]
+    [Serializable]
     public class KafkaHeaderedMessage
     {
         [ProtoMember(1)]

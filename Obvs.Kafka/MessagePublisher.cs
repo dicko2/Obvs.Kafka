@@ -64,12 +64,7 @@ namespace Obvs.Kafka
 
             var kafkaHeaderedMessage = CreateKafkaHeaderedMessage(message, properties);
 
-            using (var stream = new MemoryStream())
-            {
-                //ProtoBuf.Serializer.Serialize(stream, kafkaHeaderedMessage);
-
-                await _producer.ProduceAsync(_topic,"", kafkaHeaderedMessage);
-            }
+            await _producer.ProduceAsync(_topic,"", kafkaHeaderedMessage);
         }
 
         private KafkaHeaderedMessage CreateKafkaHeaderedMessage(TMessage message, Dictionary<string, string> properties)

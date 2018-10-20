@@ -4,9 +4,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 using NUnit.Framework;
 using Obvs.Configuration;
 using Obvs.Kafka.Configuration;
@@ -24,27 +21,6 @@ namespace Obvs.Kafka.Tests
          Random _rnd = new Random();
         private Stopwatch _sw;
 
-        [SetUp]
-        public void SetUp()
-        {
-            var config = new LoggingConfiguration();
-
-            // Step 2. Create targets and add them to the configuration 
-            var consoleTarget = new ColoredConsoleTarget();
-            // Step 3. Set target properties 
-            consoleTarget.Layout = @"${date:format=HH\:mm\:ss} ${logger} ${message}";
-
-            // Uncomment to log to console.
-            //config.AddTarget("console", consoleTarget);
-
-            // Step 4. Define rules
-            var rule1 = new LoggingRule("*", LogLevel.Trace, consoleTarget);
-            config.LoggingRules.Add(rule1);
-
-            // Step 5. Activate the configuration
-            NLog.LogManager.Configuration = config;
-
-        }
 
 
         [Explicit]

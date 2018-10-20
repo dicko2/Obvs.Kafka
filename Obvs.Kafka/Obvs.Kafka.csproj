@@ -7,7 +7,6 @@
     <Product>Obvs.Kafka</Product>
     <Description>Kafka transport support for Obvs</Description>
     <Copyright>Copyright 2015</Copyright>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <Version>1.0.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
@@ -42,11 +41,19 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp />
   </PropertyGroup>
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Obvs.Kafka.Tests, Obvs.Kafka.IntergrationTests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="0.11.6" />
     <PackageReference Include="librdkafka.redist" Version="0.11.6" />
     <PackageReference Include="Obvs" Version="5.0.0.17" />
     <PackageReference Include="protobuf-net" Version="2.1.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

@@ -9,9 +9,6 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 using NUnit.Framework;
 using Obvs.Configuration;
 using Obvs.Kafka.Configuration;
@@ -26,31 +23,6 @@ namespace Obvs.Kafka.Tests
         string _seed2Addresses = "192.168.99.101";
          Random _rnd = new Random();
 
-        [SetUp]
-        public void SetUp()
-        {
-            var config = new LoggingConfiguration();
-
-            // Step 2. Create targets and add them to the configuration 
-            var consoleTarget = new ColoredConsoleTarget();
-            config.AddTarget("console", consoleTarget);
-
-            var fileTarget = new FileTarget();
-            config.AddTarget("file", fileTarget);
-
-            // Step 3. Set target properties 
-            consoleTarget.Layout = @"${date:format=HH\:mm\:ss} ${logger} ${message}";
-            fileTarget.FileName = "${basedir}/file.txt";
-            fileTarget.Layout = "${message}";
-
-            // Step 4. Define rules
-            var rule1 = new LoggingRule("*", LogLevel.Trace, consoleTarget);
-            config.LoggingRules.Add(rule1);
-
-            // Step 5. Activate the configuration
-            NLog.LogManager.Configuration = config;
-
-        }
 
         [Test]
         [Explicit]
