@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Obvs.Kafka", "Obvs.Kafka\Obvs.Kafka.csproj", "{0E8640AA-16CD-4691-A59F-BE5EB3039304}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Obvs.Kafka", "Obvs.Kafka\Obvs.Kafka.csproj", "{0E8640AA-16CD-4691-A59F-BE5EB3039304}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Obvs.Kafka.Tests", "Obvs.Kafka.Tests\Obvs.Kafka.Tests.csproj", "{448C0387-1D3B-44DE-A27C-32BC3BD93C70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Obvs.Kafka.Tests", "Obvs.Kafka.Tests\Obvs.Kafka.Tests.csproj", "{448C0387-1D3B-44DE-A27C-32BC3BD93C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Obvs.Kafka.IntergrationTest", "Obvs.Kafka.IntergrationTest\Obvs.Kafka.IntergrationTest.csproj", "{A63D2920-0CCC-4579-A57D-DE127495AB72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Obvs.Kafka.IntergrationTest", "Obvs.Kafka.IntergrationTest\Obvs.Kafka.IntergrationTest.csproj", "{A63D2920-0CCC-4579-A57D-DE127495AB72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{983F91AE-A68C-464B-B442-96069953F596}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{A5E0AD94-3EF4-4182-B517-EB3D2BCA9447}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

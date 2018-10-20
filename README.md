@@ -1,1 +1,3 @@
-Kafka transport for Obvs, please see the main Obvs repository for documentation and examples.
+# Kafka Transport for Obvs
+
+Please see the main [Obvs repository](https://github.com/christopherread/Obvs) for documentation and examples.
