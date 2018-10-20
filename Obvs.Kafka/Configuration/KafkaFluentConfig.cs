@@ -29,7 +29,7 @@ namespace Obvs.Kafka.Configuration
     {
         ICanSpecifyKafkaBroker<TMessage, TCommand, TEvent, TRequest, TResponse> WithKafkaProducerConfiguration(KafkaProducerConfiguration kafkaProducerConfiguration);
         ICanSpecifyKafkaBroker<TMessage, TCommand, TEvent, TRequest, TResponse> WithKafkaSourceConfiguration(KafkaSourceConfiguration kafkaSourceConfiguration);
-        ICanSpecifyEndpointSerializers<TMessage, TCommand, TEvent, TRequest, TResponse> ConnectToKafka(string connectionString);
+        ICanSpecifyEndpointSerializers<TMessage, TCommand, TEvent, TRequest, TResponse> ConnectToKafka(string groupId, string connectionString);
     }
 
     public interface ICanSpecifyKafkaMessageFiltering<TMessage, TCommand, TEvent, TRequest, TResponse>
@@ -59,6 +59,7 @@ namespace Obvs.Kafka.Configuration
         private readonly ICanAddEndpoint<TMessage, TCommand, TEvent, TRequest, TResponse> _canAddEndpoint;
         private string _serviceName;
         private string _connectiongString;
+        private string _groupId;
         private IMessageSerializer _serializer;
         private IMessageDeserializerFactory _deserializerFactory;
         private Func<Assembly, bool> _assemblyFilter;
@@ -117,7 +118,7 @@ namespace Obvs.Kafka.Configuration
         {
             return new KafkaServiceEndpointProvider<TServiceMessage, TMessage, TCommand, TEvent, TRequest, TResponse>(
                 _serviceName, 
-                new KafkaConfiguration(_connectiongString),
+                new KafkaConfiguration(_connectiongString, _groupId),
                 _kafkaSourceConfig,
                 _kafkaProducerConfig,
                 _serializer, 
@@ -128,9 +129,10 @@ namespace Obvs.Kafka.Configuration
                 _typeFilter);
         }
 
-        public ICanSpecifyEndpointSerializers<TMessage, TCommand, TEvent, TRequest, TResponse> ConnectToKafka(string connectionString)
+        public ICanSpecifyEndpointSerializers<TMessage, TCommand, TEvent, TRequest, TResponse> ConnectToKafka(string groupId, string connectionString)
         {
             _connectiongString = connectionString;
+            _groupId = groupId;
             return this;
         }
         

@@ -40,6 +40,8 @@
     <NuGetPackageImportStamp />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="CompareWithActiveMQ.cs" />
+    <Compile Remove="Kafka4NetTests.cs" />
     <Compile Remove="TestMessagePublisher.cs" />
     <Compile Remove="TestMessageSource.cs" />
   </ItemGroup>

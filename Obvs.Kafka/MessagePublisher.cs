@@ -34,6 +34,7 @@ namespace Obvs.Kafka
             _serializer = serializer;
             _propertyProvider = propertyProvider;
             _producerConfig = producerConfig;
+            Connect();
         }
 
         public Task PublishAsync(TMessage message)
@@ -60,8 +61,6 @@ namespace Obvs.Kafka
                 return;
             }
 
-            await Connect();
-
             var kafkaHeaderedMessage = CreateKafkaHeaderedMessage(message, properties);
 
             await _producer.ProduceAsync(_topic,"", kafkaHeaderedMessage);
@@ -84,12 +83,13 @@ namespace Obvs.Kafka
             };
         }
 
-        private async Task Connect()
+        private void Connect()
         {
             if (Interlocked.CompareExchange(ref _connected, 1, 0) == 0)
             {
-                var configProducer = new Dictionary<string, object> { { "bootstrap.servers", _kafkaConfiguration.SeedAddresses },
-                    { "auto.create.topics.enable", true } };
+                var configProducer = new Dictionary<string, object> { { "bootstrap.servers", _kafkaConfiguration.SeedAddresses }
+                    //,{ "auto.create.topics.enable", true }
+                };
                 
                 _producer = new Producer<string,KafkaHeaderedMessage>(configProducer, 
                     new StringSerializer(Encoding.UTF8),
