@@ -94,14 +94,29 @@ namespace Obvs.Kafka
                 _producer = new Producer<string,KafkaHeaderedMessage>(configProducer, 
                     new StringSerializer(Encoding.UTF8),
                     new KafkaHeaderedMessageSerializer());
-
+                _producer.OnError += ErrorEvent;
+                _producer.OnLog += LogEvent;
+                _producer.OnStatistics += LogStats;
                 _disposable = Disposable.Create(() =>
                 {
                     _disposed = true;
-                    _producer.Flush(5);
-                    _producer.Dispose();
                 });
             }
+        }
+
+        private void LogStats(object sender, string e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
+        private void LogEvent(object sender, LogMessage e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+
+        private void ErrorEvent(object sender, Error e)
+        {
+            Console.WriteLine(e.ToString());
         }
 
         public void Dispose()

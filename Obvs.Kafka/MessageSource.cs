@@ -7,7 +7,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Confluent.Kafka;
 using Obvs.Kafka.Configuration;
-using Obvs.Kafka.Serialization;
 using Obvs.Serialization;
 using ProtoBuf;
 
@@ -23,7 +22,7 @@ namespace Obvs.Kafka
 
         private readonly KafkaSourceConfiguration _sourceConfig;
         private readonly bool _applyFilter;
-
+        private ObserverConsumer obscon;
         public MessageSource(KafkaConfiguration kafkaConfig,
             KafkaSourceConfiguration sourceConfig, 
             string topicName,
@@ -36,44 +35,29 @@ namespace Obvs.Kafka
             _propertyFilter = propertyFilter;
             _sourceConfig = sourceConfig;
             _applyFilter = propertyFilter != null;
+            obscon = new ObserverConsumer(_kafkaConfig.SeedAddresses, _kafkaConfig.GroupId, _topicName);
         }
-
+        
         public IObservable<TMessage> Messages
         {
             get
             {
-                return Observable.Create<TMessage>(observer =>
-                {
-                    var configConsumer = new Dictionary<string, object>
-                    {
-                        { "bootstrap.servers", _kafkaConfig.SeedAddresses },
-                        { "group.id", _kafkaConfig.GroupId },
-                        { "enable.auto.commit", true }
-                    };
-
-                    var consumer =
-                        new Consumer<Ignore, KafkaHeaderedMessage>(configConsumer, null, 
-                                        new KafkaHeaderedMessageDeserializer());
-
-                    return Observable.FromEventPattern<Message<Ignore, KafkaHeaderedMessage>>(
-                        a => consumer.OnMessage += a,
-                        b => consumer.OnMessage -= b)
-                        .Where(PassesFilter)
-                        .Select(DeserializePayload)
-                        .Subscribe(observer);
-                });
+                return Observable.Create<TMessage>(observer => obscon
+                    .Where(PassesFilter)
+                    .Select(DeserializePayload)
+                    .Subscribe(observer));
             }
         }
-
-        private bool PassesFilter(EventPattern<Message<Ignore, KafkaHeaderedMessage>> arg)
+        
+        private bool PassesFilter(Message<Ignore, KafkaHeaderedMessage> arg)
         {
-            return !_applyFilter || _propertyFilter(arg.EventArgs.Value.Properties);
+            return !_applyFilter || _propertyFilter(arg.Value.Properties);
         }
 
-        private TMessage DeserializePayload(EventPattern<Message<Ignore, KafkaHeaderedMessage>> arg)
+        private TMessage DeserializePayload(Message<Ignore, KafkaHeaderedMessage> arg)
         {
-            var deserializer = _deserializers[arg.EventArgs.Value.PayloadType];
-            return deserializer.Deserialize(new MemoryStream(arg.EventArgs.Value.Payload));
+            var deserializer = _deserializers[arg.Value.PayloadType];
+            return deserializer.Deserialize(new MemoryStream(arg.Value.Payload));
         }
 
         public void Dispose()
